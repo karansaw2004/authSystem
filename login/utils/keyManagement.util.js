@@ -127,8 +127,6 @@ export class SecurityManagement {
     }
   }
   createUserId(mail) {
-    console.log("here");
-    console.log(this.#hmacKey);
     return this.#createHmac(mail, this.#hmacKey);
   }
   createDeviceFingerPrintHash(deviceFingerPrint) {
@@ -162,7 +160,6 @@ export class SecurityManagement {
       };
     }
     const hmacVerified = this.#verifyHmac(digest, deviceFingerPrint, key);
-    console.log(hmacVerified);
     if (!hmacVerified) {
       return {
         success: false,

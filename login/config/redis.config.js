@@ -41,6 +41,9 @@ class RedisClient {
     async del(key) {
         await this.#redisClient.del(key);
     }
+    async setWithoutExpiration(key, value) {
+        await this.#redisClient.set(key, value);
+    }
 };
 
 export {RedisClient};

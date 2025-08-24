@@ -87,8 +87,6 @@ class EnvironmentVariable {
         }
     ) {
         this.#hmacKey = hmacKey;
-        console.log("HMAC KEY SET");
-        console.log(this.#hmacKey);
     }
     setRedpandaConfig(
         {

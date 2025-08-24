@@ -26,8 +26,6 @@ export async function injectVariable() {
         env.setCloudConfig(cloudConfig);
         env.setDatabaseConfig(databaseUrl);
         env.setHmacKey(hmacKey);
-        console.log("thsgfsgca")
-        console.log(hmacKey)
         env.setRedisConfig(redisConfig);
         env.setRedpandaConfig(redpandaConfig);
         env.setValidKeys(validKeys);

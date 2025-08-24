@@ -1,6 +1,9 @@
+import {loginRoute} from "./login.route.js";
+import {multiFactorAuthenticationRoute} from "./multiFactorAuthentication.route.js";
+import {verifyOtpLoginRoute} from "./verifyOtpLogin.route.js";
+
 export function masterRoute(fastify,opts) {
-    fastify.register(import('./session.route.js'), { prefix: '/login' });
-    fastify.register(import('./mfa.route.js'), { prefix: '/multifactorauthentication' });
-    fastify.register(import('./password.route.js'), { prefix: '/twofactorAuthentication' });
-    fastify.register(import('./user.route.js'), { prefix: '/verifyotplogin' });
+    fastify.register(loginRoute, { prefix: '/login' });
+    fastify.register(multiFactorAuthenticationRoute, { prefix: '/multifactorauthentication' });
+    fastify.register(verifyOtpLoginRoute, { prefix: '/verifyotplogin' });
 }

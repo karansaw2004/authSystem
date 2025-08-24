@@ -1,7 +1,7 @@
 import {ApiError} from "../err/api.err.js";
 import {deepSanatize} from "../utils/deepSanatize.util.js";
 
-export function multiFactorAuthentication(req, reply, done) {
+export function multiFactorAuthenticationMiddleware(req, reply, done) {
     try {
         const { mail, mfaCode, deviceFingerPrint } = req.body;
         const sanitizedBody = {

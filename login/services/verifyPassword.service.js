@@ -1,4 +1,4 @@
-import {hashingPasswordClient} from "../clients/hashingPassword.client";
+import {hashingPasswordClient} from "../clients/hashingPassword.client.js";
 
 
 export function verifyPassword(password, hashedPassword) {

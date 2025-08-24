@@ -2,7 +2,7 @@ import {ApiError} from "../err/api.err.js";
 import {deepSanatize} from "../utils/deepSanatize.util.js";
 
 
-export function verifyOtpLogin(req, reply, done) {
+export function verifyOtpLoginMiddleware(req, reply, done) {
     try {
         const { mail, otp, deviceFingerPrint } = req.body;
         const sanitizedBody = {

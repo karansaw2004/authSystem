@@ -41,13 +41,14 @@ export async function handleLogin(req, reply) {
         };
         const saveLoginDetail = await Login.create({userId,deviceFingerPrintHash,ipAddress:req.ip});
         if (!saveLoginDetail) {
+            console.log("error in saving login detail");
             return reply.send(new ApiError("Internal server error",500));
         };
 
         const accessTokenPayload = {
             userId: userId,
             mail: user.mail,
-            profileImageUrl:"",
+            profileImageUrl:user.profileImageUrl,
             name: user.name,
             deviceFingerPrintHash,
         };

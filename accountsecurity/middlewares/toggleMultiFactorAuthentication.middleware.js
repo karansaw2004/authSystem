@@ -5,7 +5,7 @@ import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 export function toggleMultiFactorAuthenticationMiddleware(req, reply, done) {
     try {
         const { securitykey, deviceFingerPrint } = req.body;
-        const data = verifyAccessToken(req.headers.authorization);
+        const data = verifyAccessToken(req);
         if (!data) {
             return reply.send(new ApiError("Invalid or expired token", 401));
         };

@@ -5,7 +5,7 @@ import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 export function updateDobMiddleware(req, reply, done) {
     try {
         const { deviceFingerPrint,dob } = req.body;
-        const data = verifyAccessToken(req.headers.authorization);
+        const data = verifyAccessToken(req);
         if (!data) {
             return reply.send(new ApiError("Invalid or expired token", 401));
         };

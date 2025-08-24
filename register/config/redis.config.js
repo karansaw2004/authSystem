@@ -33,7 +33,6 @@ class RedisClient {
     }
     async set(key, value, expiration) {
         await this.#redisClient.set(key, value, 'EX', expiration);
-        console.log(`Set key: ${key}`);
     }
     async get(key) {
         return await this.#redisClient.get(key);

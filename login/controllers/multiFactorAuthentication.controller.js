@@ -5,6 +5,7 @@ import {securityManager} from "../security/securityManager.security.js";
 import {redis} from "../config/index.js";
 import {generateOtp} from "../helpers/generateOtp.helper.js";
 import {User} from "../schema/user.modle.js";
+import {SendOtp} from "../utils/sendOtp.util.js";
 
 export async function handleMultiFactorAuthentication(req,reply,done) {
     try {
@@ -27,6 +28,11 @@ export async function handleMultiFactorAuthentication(req,reply,done) {
         };
         if (user.twoFactorAuthenticationEnabled) {
             const otp = generateOtp().toString();
+            const sendOtp = await SendOtp(mail,"for login", otp);
+            if (!sendOtp) {
+                console.log("error in sending otp");
+                return reply.send(new ApiError("Internal Server Error", 500));
+            };
             await redis.del(`multiFactorAuthentication:${userId}`);
             await redis.set(`twoFactorAuthentication:${userId}`, JSON.stringify({otp,deviceFingerPrintHash:user.deviceFingerPrintHash}),300);
             return reply.send(new ApiResponse({twoFactorAuthenticationEnabled:true},"success", 200));

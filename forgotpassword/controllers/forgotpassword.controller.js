@@ -1,9 +1,10 @@
 import {ApiError} from "../err/api.err.js";
 import {ApiResponse} from "../res/apiResponse.res.js";
 import {securityManager} from "../security/securityManager.security.js";
-import {hashPassword} from "../services/hashPassword.service.js";
+import {generateOtp} from "../helpers/generateOtp.helper.js";
 import {redis} from "../config/index.js";
 import {User} from "../schema/user.modle.js";
+import {SendOtp} from "../utils/sendOtp.util.js";
 
 
 export async function handleForgotPassword(req,reply) {
@@ -17,12 +18,17 @@ export async function handleForgotPassword(req,reply) {
                 return reply.send(new ApiError("User not found", 404));
             }
         }
-        const otp = securityManager.generateOtp().toString();
-        await redis.set(`forgot-password:${user.id}`, otp, "EX", 300);
-        await securityManager.sendOtpToUser(user, otp);
-        return reply.send(new ApiResponse("OTP sent successfully"));
+        const otp = generateOtp().toString();
+        const sendOtpResponse = await SendOtp(mail, otp);
+        if (!sendOtpResponse) {
+            console.log("error in sending OTP");
+            return reply.send(new ApiError("Internal Server Error", 500));
+        }
+        const deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
+        await redis.set(`forgotpassword:${userId}`, { otp, deviceFingerPrintHash }, 300);
+        return reply.send(new ApiResponse({otpSent:true},"success", 200));
     } catch (error) {
         console.log("error in the main handle function of the handle forgot password", error);
         return reply.send(new ApiError("Internal Server Error", 500));
-    }
-}
+    };
+};

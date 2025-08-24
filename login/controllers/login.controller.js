@@ -6,6 +6,7 @@ import {User} from "../schema/user.modle.js";
 import {verifyPassword} from "../services/verifyPassword.service.js";
 import {generateOtp} from "../helpers/generateOtp.helper.js";
 import {Login} from "../schema/login.modle.js";
+import {SendOtp} from "../utils/sendOtp.util.js";
 
 export async function handleLogin(req, reply) {
     try {
@@ -32,7 +33,12 @@ export async function handleLogin(req, reply) {
             return reply.send(new ApiResponse({ multiFactorAuthenticationEnabled: true }, "success", 201));
         };
         if (user.twoFactorAuthentication) {
-            const otp = generateOtp().toString();
+            const otp = generateOtp().toString()
+            const sendOtp = await SendOtp(mail,"for login", otp);
+            if (!sendOtp) {
+                console.log("error in sending otp");
+                return reply.send(new ApiError("Internal Server Error", 500));
+            }
             await redis.set(`twoFactorAuthentication:${userId}`, JSON.stringify({ otp, deviceFingerPrintHash }), 300);
             return reply.send(new ApiResponse({ twoFactorAuthenticationEnabled: true }, "success", 201));
         };

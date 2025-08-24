@@ -33,15 +33,15 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
             return reply.send(new ApiError("Internal Server error",500));
         };
         const accessTokenPayload = {
-            name: updateUser.name,
-            email: updateUser.mail,
             userId: userId,
-            profileImageUrl: updateUser.profileImageUrl,
             deviceFingerPrintHash: deviceFingerPrintHash
         };
         const refreshTokenPayload = {
             userId: userId,
-            deviceFingerPrintHash: deviceFingerPrintHash
+            deviceFingerPrintHash: deviceFingerPrintHash,
+            name: updateUser.name,
+            email: updateUser.mail,
+            profileImageUrl: updateUser.profileImageUrl,
         };
         return reply.send(new ApiResponse({ accessToken: accessTokenPayload, refreshToken: refreshTokenPayload, userId }, "success", 200));
     } catch (error) {

@@ -62,14 +62,15 @@ export async function handleVerifyOtpRegister(req, reply) {
         await redis.del(`reserve:${userId}`);
         await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user.toObject()));
         const accessTokenPayload = {
-            mail: user.mail,
-            name: user.name,
-            profileImageUrl:"",
+            userId: userId,
             deviceFingerPrintHash: data.deviceFingerPrintHash,
         };
         const refreshTokenPayload = {
             userId: user.userId,
             deviceFingerPrintHash: data.deviceFingerPrintHash,
+            mail: user.mail,
+            name: user.name,
+            profileImageUrl:"",
         };
         return reply.send(new ApiResponse({ registered:true, tokens:{accessToken:securityManager.createAccessToken(accessTokenPayload,"1d"), refreshToken:securityManager.createRefreshToken(refreshTokenPayload,"7d")}}, "success", 200));
     } catch (error) {

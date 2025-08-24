@@ -39,14 +39,14 @@ export async function handleVerifyOtpLogin(req,reply){
         };
         const accessTokenPayload = {
             userId,
-            mail:userData.mail,
-            name:userData.name,
-            profileImageUrl:userData.profileImageUrl,
             deviceFingerPrint,
         };
         const refreshTokenPayload = {
             userId,
             deviceFingerPrint,
+            mail:userData.mail,
+            name:userData.name,
+            profileImageUrl:userData.profileImageUrl,
         };
         return reply.send(new ApiResponse({
             accessToken: securityManager.createAccessToken(accessTokenPayload),

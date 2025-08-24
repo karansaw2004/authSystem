@@ -53,14 +53,14 @@ export async function handleLogin(req, reply) {
 
         const accessTokenPayload = {
             userId: userId,
-            mail: user.mail,
-            profileImageUrl:user.profileImageUrl,
-            name: user.name,
             deviceFingerPrintHash,
         };
         const refreshTokenPayload = {
             userId: userId,
             deviceFingerPrintHash,
+            mail: user.mail,
+            profileImageUrl:user.profileImageUrl,
+            name: user.name,
         };
 
         return reply.send(new ApiResponse({ accessToken: securityManager.createAccessToken(accessTokenPayload, "1d"), refreshToken: securityManager.createRefreshToken(refreshTokenPayload, "7d") }, "success", 200));

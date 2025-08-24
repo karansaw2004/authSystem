@@ -1,7 +1,7 @@
 import {ApiError} from "../err/api.err.js";
 import {deepSanatize} from "../utils/deepSanatize.util.js";
 
-export const forgotPasswordSanatizeMiddleware = (req, reply,done) => {
+export function verifyOtpForgotPasswordMiddleware(req, reply, done) {
     try {
         const {mail,otp,deviceFingerPrint} = req.body;
         const sanitizedData = {
@@ -18,4 +18,4 @@ export const forgotPasswordSanatizeMiddleware = (req, reply,done) => {
         console.log("error in the middleware function of the forgotPassword route",error.message);
         return reply.send(new ApiError("Internal Server Error", 500));
     }
-};
+}

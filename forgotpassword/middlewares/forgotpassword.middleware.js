@@ -16,5 +16,5 @@ export function forgotPasswordMiddleware(req, reply, done) {
     } catch (error) {
         console.log("error in the middleware function of the forgotPassword route",error.message);
         return reply.send(new ApiError("Internal Server Error", 500));
-    }
-}
+    };
+};

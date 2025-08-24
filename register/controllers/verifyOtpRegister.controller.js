@@ -3,7 +3,7 @@ import {ApiResponse}  from "../res/apiResponse.res.js";
 import {redis} from "../config/index.js";
 import {securityManager} from "../security/securityManager.security.js";
 import {User} from "../schema/user.modle.js";
-import {findLocation,findCoordinates} from "../utils/findLocation.util.js";
+import {findLocation} from "../utils/findLocation.util.js";
 import mongoose from "mongoose";
 import {Login} from "../schema/login.modle.js";
 

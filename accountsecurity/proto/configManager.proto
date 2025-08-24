@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package Auth.configManager.v1;
+
+service authService {
+    rpc hmacKey (hmacKeyRequest) returns (hmackeyResponse);
+    rpc databaseUrl (databaseUrlRequest) returns (databaseUrlResponse);
+    rpc cloudConfig (cloudConfigRequest) returns (cloudConfigResponse);
+    rpc redisConfig (redisConfigRequest) returns (redisConfigResponse);
+    rpc redpandaConfig (redpandaConfigRequest) returns (redpandaConfigResponse);
+    rpc validKeys (validKeysRequest) returns (validKeysResponse);
+};
+
+message hmacKeyRequest {};
+message databaseUrlRequest {};
+message cloudConfigRequest {};
+message redisConfigRequest {};
+message redpandaConfigRequest {};
+message validKeysRequest {};
+
+
+message hmackeyResponse {
+    string hmacKey = 1;
+};
+
+message databaseUrlResponse {
+    string connectionUrl =1;
+};
+
+message cloudConfigResponse {
+    string accessKeyId = 1;
+    string secretAccesskey = 2;
+    string bucketName = 3;
+    string region = 4;
+};
+
+message redisConfigResponse {
+    int32 port = 1;
+    string host = 2;
+    string dbUsername = 3;
+    string dbPassword = 4;
+};
+
+message redpandaConfigResponse {
+    string clientId = 1;
+    repeated string brokers = 2;
+};
+
+message validKeysResponse {
+    string oldAccessTokenKeyVersion = 1;
+    string oldRefreshTokenKeyVersion = 2;
+    string oldDeviceFingerPrintKeyVersion =3;
+    string oldAccessTokenKey = 4;
+    string oldRefreshTokenKey = 5;
+    string oldDeviceFingerPrintKey = 6;
+    string newAccessTokenKeyVersion = 7;
+    string newRefreshTokenKeyVersion = 8;
+    string newDeviceFingerPrintKeyVersion = 9;
+    string newAccessTokenKey = 10;
+    string newRefreshTokenKey = 11;
+    string newDeviceFingerPrintKey = 12;
+
+};
+

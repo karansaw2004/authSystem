@@ -6,10 +6,11 @@ import {redis} from "../config/index.js";
 import {generateOtp} from "../helpers/generateOtp.helper.js";
 import {User} from "../schema/user.modle.js";
 import {SendOtp} from "../utils/sendOtp.util.js";
+import {verifyPassword} from "../services/verifyPassword.service.js";
 
 export async function handleMultiFactorAuthentication(req,reply,done) {
     try {
-        const { mail, deviceFingerPrint, otp } = req.body;
+        const { mail, deviceFingerPrint, securityKey } = req.body;
         const userId = securityManager.createUserId(mail);
         let user = await redis.get(`multiFactorAuthentication:${userId}`);
         if(!user){
@@ -23,8 +24,9 @@ export async function handleMultiFactorAuthentication(req,reply,done) {
         if (verifyDevice.reHash) {
             user.deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
         };
-        if (user.otp !== otp) {
-            return reply.send(new ApiError("invalid request", 400));
+        const verifySecurityKey = await verifyPassword(securityKey, user.securityKey);
+        if (!verifySecurityKey) {
+            return reply.send(new ApiError("wrong security key", 400));
         };
         if (user.twoFactorAuthenticationEnabled) {
             const otp = generateOtp().toString();

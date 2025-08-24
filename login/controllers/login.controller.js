@@ -29,7 +29,7 @@ export async function handleLogin(req, reply) {
             if ((user.multiFactorAuthentication && user.twoFactorAuthentication)) {
                 twoFactorAuthenticationEnabled = true;
             }
-            await redis.set(`multiFactorAuthentication:${userId}`, JSON.stringify({ deviceFingerPrintHash, twoFactorAuthenticationEnabled }), 300);
+            await redis.set(`multiFactorAuthentication:${userId}`, JSON.stringify({ deviceFingerPrintHash, twoFactorAuthenticationEnabled, securityKey: user.hashedSecurityKey }), 300);
             return reply.send(new ApiResponse({ multiFactorAuthenticationEnabled: true }, "success", 201));
         };
         if (user.twoFactorAuthentication) {

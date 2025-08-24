@@ -27,9 +27,7 @@ export async function handleCheckUserId(req,reply) {
         };
         user = await User.findOne({userId:userId});
         if (user) {
-            let data = {...user};
-            data.deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
-            await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(data));
+            await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user));
             return reply.send(new ApiResponse({available:false},"success", 200));
         };
         const deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);

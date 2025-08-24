@@ -60,18 +60,15 @@ export async function handleVerifyOtpRegister(req, reply) {
             return reply.send(new ApiError("Internal Server Error", 500));
         };
         await redis.del(`reserve:${userId}`);
-        let userData = user.toObject();
-        userData.deviceFingerPrintHash = data.deviceFingerPrintHash;
-        await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(userData));
+        await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user.toObject()));
         const accessTokenPayload = {
             mail: user.mail,
             name: user.name,
+            profileImageUrl:"",
             deviceFingerPrintHash: data.deviceFingerPrintHash,
         };
         const refreshTokenPayload = {
             userId: user.userId,
-            name: user.name,
-            mail: user.mail,
             deviceFingerPrintHash: data.deviceFingerPrintHash,
         };
         return reply.send(new ApiResponse({ registered:true, tokens:{accessToken:securityManager.createAccessToken(accessTokenPayload,"1d"), refreshToken:securityManager.createRefreshToken(refreshTokenPayload,"7d")}}, "success", 200));

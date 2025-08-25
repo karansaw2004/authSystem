@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package AuthSystem.tokenVerificationAdapter.v1;
+
+service verifyToken {
+    rpc verifyAccessToken (verifyAccessTokenRequest) returns (verifyAccessTokenResponse);
+    rpc verifyRefreshToken (verifyRefreshTokenRequest) returns (verifyRefreshTokenResponse);
+    rpc getUserData (getUserDataRequest) returns (getUserDataResponse);
+};
+
+message verifyAccessTokenRequest {
+    string accessToken = 1;
+    string deviceFingerprint = 2;
+};
+
+message verifyAccessTokenResponse {
+    bool success = 1;
+    string userId = 2;
+};
+
+message verifyRefreshTokenRequest {
+    string refreshToken = 1;
+    string deviceFingerprint = 2;
+};
+
+message verifyRefreshTokenResponse {
+    bool success = 1;
+    string accessToken = 2;
+    string refreshToken = 3;
+};
+
+
+
+message getUserDataRequest {
+    string refreshToken = 1;
+    string deviceFingerprint = 2;
+};
+
+
+
+message getUserDataResponse {
+    string userId = 1;
+    string email = 2;
+    string name = 3;
+    string profileImageUrl = 4;
+};

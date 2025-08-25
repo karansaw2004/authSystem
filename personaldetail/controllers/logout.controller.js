@@ -1,0 +1,21 @@
+import {ApiError} from "../err/api.err.js";
+import {ApiResponse} from "../res/apiResponse.res.js";
+import {securityManager} from "../security/securityManager.security.js";
+import {redis} from "../config/index.js";
+import {Login} from "../schema/login.modle.js";
+
+
+export async function handleLogOut(req,reply) {
+    try {
+        const {userId,deviceFingerPrint,deviceFingerPrintHash} = req.body;
+        const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint,deviceFingerPrintHash);
+        if (!verifyDevice.success) {
+            return reply.send(new ApiError("device is invalid",402));
+        };
+        const loginDetail = await Login.findOneAndUpdate({userId,deviceFingerPrintHash},{$set:{currentStatus:"deActive"}})
+        return reply.send(new ApiResponse(loginDetail,"sucess",200));
+    } catch (error) {
+        console.log("error in the main handle function of the logout",error.message);
+        return reply.send(new ApiError("Internal server error",500));
+    }
+};

@@ -1,6 +1,5 @@
 import {redis} from "../config/index.js";
 import {ApiError} from "../err/api.err.js";
-import {ApiError} from "../res/api.res.js";
 import {securityManager} from "../security/securityManager.security.js";
 import {User} from "../schema/user.modle.js";
 import {Login} from "../schema/login.modle.js";

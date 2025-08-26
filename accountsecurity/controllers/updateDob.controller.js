@@ -2,7 +2,7 @@ import {ApiError} from "../err/api.err.js";
 import {ApiResponse} from "../res/apiResponse.res.js";
 import {securityManager} from "../security/securityManager.security.js";
 import {User} from "../schema/user.modle.js";
-import {redis} from "../config/redis.config.js";
+import {redis} from "../config/index.js";
 
 
 export async function handleUpdateDob(req, reply) {

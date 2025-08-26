@@ -2,7 +2,7 @@ import {ApiError} from "../err/api.err.js";
 import {deepSanatize} from "../utils/deepSanatize.util.js";
 import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 
-export function enableMultiFactorAuthenticationMiddleware(req, reply, done) {
+export function verifyOtpRecoveryMailMiddleware(req, reply, done) {
     try {
         const { otp, deviceFingerPrint } = req.body;
         const data = verifyAccessToken(req);

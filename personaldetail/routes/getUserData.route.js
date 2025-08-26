@@ -6,7 +6,7 @@ import {getUserDataMiddleware} from "../middlewares/getUserData.middleware.js";
 export function getUserDataRoute(fastify, options) {
     fastify.route(
         {
-            method:"GET",
+            method:"POST",
             url:"/user/data",
             schema:{
                 response:{

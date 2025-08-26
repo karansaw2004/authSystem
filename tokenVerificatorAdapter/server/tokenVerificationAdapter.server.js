@@ -1,7 +1,7 @@
 import grpc from "@grpc/grpc-js";
 import protoLoader from "@grpc/proto-loader";
 import {fileURLToPath} from "url";
-import {services} from "../e/tokenVerificationAdapter.service.js";
+import {services} from "../service/tokenVerificationAdapter.services.js";
 import path from "path";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,7 +14,7 @@ const proto = grpc.loadPackageDefinition(packageDefinition);
 export function startServer(port) {
     try {
         const server = new grpc.Server();
-        server.addService(proto.TokenVerificationService.service, services);
+        server.addService(proto.AuthSystem.tokenVerificationAdapter.v1.verifyToken.service, services);
         server.bindAsync(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure(), (error, port) => {
             if (error) {
                 console.error("Error binding gRPC server:", error);

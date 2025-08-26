@@ -7,11 +7,7 @@ import {redis} from "../config/index.js";
 
 export async function handleToggleTwoFactorAuthentication(req, reply) {
     try {
-        const { userId, deviceFingerPrint, deviceFingerPrintHash } = req.body;
-        const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint, deviceFingerPrintHash);
-        if (!verifyDevice.success) {
-            return reply.send(new ApiError("Device verification failed", 401));
-        };
+        const { userId } = req.body;
         const user = await User.findOne({ userId });
         if (!user) {
             return reply.send(new ApiError("User not found", 404));

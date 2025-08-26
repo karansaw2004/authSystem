@@ -1,7 +1,7 @@
 import {handleLogOut} from "../controllers/logout.controller.js";
 import {logoutMiddleware} from "../middlewares/logout.middleware.js";
-import {verifyAccessTokenMiddleware} from "../middlewares/verifyAccessToken.middleware.js";
-
+import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
+import {verifyDevice} from "../helpers/verifyDevice.helper.js";
 
 export function logoutRoute(fastify, options) {
     fastify.route(
@@ -17,11 +17,6 @@ export function logoutRoute(fastify, options) {
                         }
                     }
                 },
-                security: [
-                    {
-                        apiKey: []
-                    }
-                ],
                 body: {
                     type: "object",
                     properties: {
@@ -29,8 +24,8 @@ export function logoutRoute(fastify, options) {
                     }
                 }
             },
-            preHandler: [verifyAccessTokenMiddleware, logoutMiddleware],
+            preHandler: [verifyAccessToken,verifyDevice,logoutMiddleware],
             handler: handleLogOut
-        }
-    )
-}
+        },
+    );
+};

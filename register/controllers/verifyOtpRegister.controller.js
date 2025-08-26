@@ -72,7 +72,7 @@ export async function handleVerifyOtpRegister(req, reply) {
             name: user.name,
             profileImageUrl:"",
         };
-        return reply.send(new ApiResponse({ registered:true, tokens:{accessToken:securityManager.createAccessToken(accessTokenPayload,"1d"), refreshToken:securityManager.createRefreshToken(refreshTokenPayload,"7d")}}, "success", 200));
+        return reply.send(new ApiResponse({ userId:userId, tokens:{accessToken:securityManager.createAccessToken(accessTokenPayload,"1d"), refreshToken:securityManager.createRefreshToken(refreshTokenPayload,"7d")}}, "success", 200));
     } catch (error) {
         console.log("error in the main handle function of the verifyOtpRegister", error.message);
         return reply.send(new ApiError("Internal Server Error", 500));

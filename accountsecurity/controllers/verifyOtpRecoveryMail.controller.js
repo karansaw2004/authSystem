@@ -6,11 +6,7 @@ import {User} from "../schema/user.modle.js";
 
 export async function handleVerifyOtpRecoveryMail(req, reply) {
     try {
-        const { userId, otp, deviceFingerPrint, deviceFingerPrintHash } = req.body;
-        const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint, deviceFingerPrintHash);
-        if (!verifyDevice) {
-            return reply.send(new ApiError("Invalid device", 401));
-        };
+        const { userId, otp} = req.body;
         const data = await redis.get(`updateRecovery:${userId}`);
         if (!data) {
             return reply.send(new ApiError("Invalid or expired OTP", 400));
@@ -19,7 +15,7 @@ export async function handleVerifyOtpRecoveryMail(req, reply) {
         if (otp !== storedOtp) {
             return reply.send(new ApiError("Invalid OTP", 400));
         };
-        const user = await User.findOneAndUpdate({ _id: userId }, { $set: { recoveryMail: newRecoveryMail } }, { new: true });
+        const user = await User.findOneAndUpdate({ userId }, { $set: { recoveryMail: newRecoveryMail } }, { new: true });
         if (!user) {
             return reply.send(new ApiError("User not found", 404));
         };
@@ -29,5 +25,5 @@ export async function handleVerifyOtpRecoveryMail(req, reply) {
     } catch (error) {
         console.log("error in the main handle function of the verify otp", error.message);
         return reply.send(new ApiError("Internal server error", 500));
-    }
-}
+    };
+};

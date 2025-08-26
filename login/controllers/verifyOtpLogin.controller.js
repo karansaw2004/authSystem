@@ -10,10 +10,11 @@ export async function handleVerifyOtpLogin(req,reply){
     try {
         const { mail, deviceFingerPrint, otp } = req.body;
         const userId = securityManager.createUserId(mail);
-        const twoFactorAuthentication = await redis.get(`twoFactorAuthentication:${userId}`);
+        let twoFactorAuthentication = await redis.get(`twoFactorAuthentication:${userId}`);
         if(!twoFactorAuthentication){
             return reply.send(new ApiError("invalid request", 400));
         };
+        twoFactorAuthentication = JSON.parse(twoFactorAuthentication);
         const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint, twoFactorAuthentication.deviceFingerPrintHash);
         if (!verifyDevice.success) {
             return reply.send(new ApiError("invalid device detected", 400));
@@ -25,14 +26,19 @@ export async function handleVerifyOtpLogin(req,reply){
             return reply.send(new ApiError("invalid otp", 400));
         };
         await redis.del(`twoFactorAuthentication:${userId}`);
-        const userData = await redis.get(userId);
+        let userData = await redis.get(`user:${userId}`);
+        let fromDb = false;
         if (!userData) {
             userData = await User.findOne({userId});
             if (!userData) {
                 return reply.send(new ApiError("User not found", 404));
             };
+            fromDb = true;
         };
-        const saveLoginDetail = await Login.create({ userId, deviceFingerPrint });
+        if (!fromDb) {
+            userData = JSON.parse(userData);
+        };
+        const saveLoginDetail = await Login.create({ userId, deviceFingerPrintHash: twoFactorAuthentication.deviceFingerPrintHash,ipAddress:req.ip });
         if (!saveLoginDetail) {
             console.log("error in saving login detail");
             return reply.send(new ApiError("Internal server error", 500));
@@ -49,6 +55,7 @@ export async function handleVerifyOtpLogin(req,reply){
             profileImageUrl:userData.profileImageUrl,
         };
         return reply.send(new ApiResponse({
+            userId: userId,
             accessToken: securityManager.createAccessToken(accessTokenPayload),
             refreshToken: securityManager.createRefreshToken(refreshTokenPayload),
         },"success", 200));

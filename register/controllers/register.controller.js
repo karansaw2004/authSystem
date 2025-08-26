@@ -5,6 +5,7 @@ import {redis} from "../config/index.js";
 import {SendOtp} from "../utils/sendOtp.util.js";
 import {generateOtp} from "../helpers/generateOtp.helper.js";
 import {hashPassword} from "../services/hashPassword.service.js";
+import {maskEmail} from "../helpers/maskMail.helper.js";
 
 export async function handleRegister(req, reply) {
     try {
@@ -30,7 +31,7 @@ export async function handleRegister(req, reply) {
         if (!isOtpSent) {
             return reply.send(new ApiError("Failed to send OTP", 500));
         };
-        return reply.send(new ApiResponse({ otpSent:true }, "success", 200));
+        return reply.send(new ApiResponse({ otpSent:true,mail:maskEmail(mail) }, "success", 200));
     } catch (error) {
         console.log("error in the main handle function of the register", error);
         return reply.send(new ApiError("Internal Server Error", 500));

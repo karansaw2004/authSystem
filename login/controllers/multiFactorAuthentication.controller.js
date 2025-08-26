@@ -7,6 +7,7 @@ import {generateOtp} from "../helpers/generateOtp.helper.js";
 import {User} from "../schema/user.modle.js";
 import {SendOtp} from "../utils/sendOtp.util.js";
 import {verifyPassword} from "../services/verifyPassword.service.js";
+import {maskMail} from "../helpers/maskMail.helper.js";
 
 export async function handleMultiFactorAuthentication(req,reply,done) {
     try {
@@ -24,8 +25,8 @@ export async function handleMultiFactorAuthentication(req,reply,done) {
         if (verifyDevice.reHash) {
             user.deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
         };
-        const verifySecurityKey = await verifyPassword(securityKey, user.securityKey);
-        if (!verifySecurityKey) {
+        const verifySecurityKey = await verifyPassword(securityKey, user.hashedSecurityKey);
+        if (!verifySecurityKey.isValid) {
             return reply.send(new ApiError("wrong security key", 400));
         };
         if (user.twoFactorAuthenticationEnabled) {
@@ -37,17 +38,22 @@ export async function handleMultiFactorAuthentication(req,reply,done) {
             };
             await redis.del(`multiFactorAuthentication:${userId}`);
             await redis.set(`twoFactorAuthentication:${userId}`, JSON.stringify({otp,deviceFingerPrintHash:user.deviceFingerPrintHash}),300);
-            return reply.send(new ApiResponse({twoFactorAuthenticationEnabled:true},"success", 200));
+            return reply.send(new ApiResponse({twoFactorAuthenticationEnabled:true, otpSent:true, mail:maskMail(mail)},"success", 200));
         };
         await redis.del(`multiFactorAuthentication:${userId}`);
-        const userData = await redis.get(userId);
+        let userData = await redis.get(`user:${userId}`);
+        let fromDb = false;
         if (!userData) {
             userData = await User.findOne({userId});
             if (!userData) {
                 return reply.send(new ApiError("User not found", 404));
             };
+            fromDb = true;
         };
-        const saveLoginDetail = await Login.create({ userId, deviceFingerPrint });
+        if (!fromDb) {
+            userData = JSON.parse(userData);
+        };
+        const saveLoginDetail = await Login.create({ userId, deviceFingerPrintHash: user.deviceFingerPrintHash,ipAddress:req.ip });
         if (!saveLoginDetail) {
             console.log("error in saving login detail");
             return reply.send(new ApiError("Internal server error", 500));
@@ -58,12 +64,13 @@ export async function handleMultiFactorAuthentication(req,reply,done) {
         };
         const refreshTokenPayload = {
             userId,
-            deviceFingerPrint,
-            mail:userData.mail,
-            name:userData.name,
-            profileImageUrl:userData.profileImageUrl,
+            deviceFingerPrintHash: user.deviceFingerPrintHash,
+            mail: userData.mail,
+            name: userData.name,
+            profileImageUrl: userData.profileImageUrl,
         };
         return reply.send(new ApiResponse({
+            userId:userId,
             accessToken: securityManager.createAccessToken(accessTokenPayload),
             refreshToken: securityManager.createRefreshToken(refreshTokenPayload),
         },"success", 200));

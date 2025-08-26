@@ -1,26 +1,16 @@
 import {ApiError} from "../err/api.err.js";
 import {deepSanatize} from "../utils/deepSanatize.util.js";
-import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 
 export function updateDobMiddleware(req, reply, done) {
     try {
-        const { deviceFingerPrint,dob } = req.body;
-        const data = verifyAccessToken(req);
-        if (!data) {
-            return reply.send(new ApiError("Invalid or expired token", 401));
-        };
-        const userId = data.payload.userId;
-        const deviceFingerPrintHash = data.payload.deviceFingerPrintHash;
+        const { dob } = req.body;
         const sanitizedData = {
             dob: deepSanatize(dob),
-            deviceFingerPrint: deviceFingerPrint,
-            userId: userId,
-            deviceFingerPrintHash: deviceFingerPrintHash,
         };
-        if (!sanitizedData.dob || !sanitizedData.deviceFingerPrint) {
-            return reply.send(new ApiError("Date of Birth and Device Finger Print are required", 400));
+        if (!sanitizedData.dob ) {
+            return reply.send(new ApiError("Date of Birt", 400));
         }
-        req.body = sanitizedData;
+        req.body.dob = sanitizedData.dob;
         return done();
     } catch (error) {
         console.log("error in the middleware function of the updateDob route", error.message);

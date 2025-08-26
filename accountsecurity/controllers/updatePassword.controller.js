@@ -8,20 +8,16 @@ import { redis } from "../config/index.js";
 
 export async function handleUpdatePassword(params) {
     try {
-        const { userId, deviceFingerPrint, deviceFingerPrintHash,newPassword } = params;
-        const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint, deviceFingerPrintHash);
-        if (!verifyDevice) {
-            return reply.send(new ApiError("Invalid device", 401));
-        };
+        const { userId,newPassword } = params;
         const hashedPassword = await hashPassword(newPassword);
         const user = await User.findByIdAndUpdate(userId, {$set: { password: hashedPassword }},{new:true});
         if (!user) {
             return reply.send(new ApiError("User not found", 404));
         };
-        await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user));
+        await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user.toObject()));
         return reply.send(new ApiResponse("Password updated successfully"));
     } catch (error) {
         console.log("error in the main handle function of the update password", error.message);
         return reply.send(new ApiError("Internal Server Error", 500));
-    }
-}
+    };
+};

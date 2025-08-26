@@ -4,23 +4,14 @@ import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 
 export function verifyOtpRecoveryMailMiddleware(req, reply, done) {
     try {
-        const { otp, deviceFingerPrint } = req.body;
-        const data = verifyAccessToken(req);
-        if (!data) {
-            return reply.send(new ApiError("Invalid or expired token", 401));
-        };
-        const userId = data.payload.userId;
-        const deviceFingerPrintHash = data.payload.deviceFingerPrintHash;
+        const { otp } = req.body;
         const sanitizedData = {
             otp: deepSanatize(otp),
-            deviceFingerPrint: deviceFingerPrint,
-            userId: userId,
-            deviceFingerPrintHash: deviceFingerPrintHash,
         };
-        if (!sanitizedData.otp || !sanitizedData.deviceFingerPrint) {
-            return reply.send(new ApiError("OTP and Device Finger Print are required", 400));
+        if (!sanitizedData.otp) {
+            return reply.send(new ApiError("OTP is required", 400));
         }
-        req.body = sanitizedData;
+        req.body.otp = sanitizedData.otp;
         return done();
     } catch (error) {
         console.log("error in the middleware function of the verifyOtpRecoveryMail route", error.message);

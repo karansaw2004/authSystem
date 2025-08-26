@@ -9,7 +9,7 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
     try {
         const { mail, otp, deviceFingerPrint,password } = req.body;
         const userId = securityManager.createUserId(mail);
-        const data = await redis.get(`forgotpassword:${userId}`);
+        let data = await redis.get(`forgotpassword:${userId}`);
         if (!data) {
             return reply.send(new ApiError("Invalid request", 400));
         }
@@ -17,7 +17,13 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
         if (data.otp !== otp) {
             return reply.send(new ApiError("Invalid OTP", 400));
         };
-        const deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
+        const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint,data.deviceFingerPrintHash);
+        if(!verifyDevice.success){
+            return reply.send(new ApiError("Device verification failed", 400));
+        };
+        if (verifyDevice.reHash) {
+            data.deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
+        };
         const hashedNewPassword = await hashPassword(password);
         const updateUser = await User.findByIdAndUpdate({userId}, {$set:{hashedPassword:hashedNewPassword}},{new:true});
         if(!updateUser){
@@ -25,24 +31,27 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
         };
         const saveLoginDetail = await Login.create({
             userId: userId,
-            deviceFingerPrintHash: deviceFingerPrintHash
+            deviceFingerPrintHash: data.deviceFingerPrintHash,
+            ipAddress: req.ip,
         });
         if (!saveLoginDetail) {
             console.log("error in saving login detail");
             return reply.send(new ApiError("Internal Server error",500));
         };
+        await redis.del(`forgotpassword:${userId}`);
+        await redis.setWithoutExpiration(`user:${userId}`,JSON.stringify(saveLoginDetail.toObject()));
         const accessTokenPayload = {
             userId: userId,
-            deviceFingerPrintHash: deviceFingerPrintHash
+            deviceFingerPrintHash: data.deviceFingerPrintHash
         };
         const refreshTokenPayload = {
             userId: userId,
-            deviceFingerPrintHash: deviceFingerPrintHash,
+            deviceFingerPrintHash: data.deviceFingerPrintHash,
             name: updateUser.name,
             email: updateUser.mail,
             profileImageUrl: updateUser.profileImageUrl,
         };
-        return reply.send(new ApiResponse({ accessToken: accessTokenPayload, refreshToken: refreshTokenPayload, userId }, "success", 200));
+        return reply.send(new ApiResponse({ userId:userId,accessToken: accessTokenPayload, refreshToken: refreshTokenPayload }, "success", 200));
     } catch (error) {
         console.log("error in the main function of verifyOtpForgotPassword", error.message);
         return reply.send(new ApiError("Internal server error", 500));

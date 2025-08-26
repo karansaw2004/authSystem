@@ -1,7 +1,7 @@
-import {verifyAccessTokenMiddleware} from "../middlewares/verifyAccessToken.middleware.js";
+import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 import {handleGetAllUserData} from "../controllers/getUserData.controller.js";
 import {getUserDataMiddleware} from "../middlewares/getUserData.middleware.js";
-
+import {verifyDevice} from "../helpers/verifyDevice.helper.js";
 
 export function getUserDataRoute(fastify, options) {
     fastify.route(
@@ -20,11 +20,6 @@ export function getUserDataRoute(fastify, options) {
                         }
                     }
                 },
-                security: [
-                    {
-                        apiKey: []
-                    }
-                ],
                 body:{
                     type: "object",
                     properties:{
@@ -32,7 +27,7 @@ export function getUserDataRoute(fastify, options) {
                     }
                 }
             },
-            preHandler: [verifyAccessTokenMiddleware, getUserDataMiddleware],
+            preHandler: [verifyAccessToken, verifyDevice, getUserDataMiddleware],
             handler: handleGetAllUserData
         }
     )

@@ -15,10 +15,12 @@ export async function handleMultiFactorAuthentication(req,reply,done) {
         const userId = securityManager.createUserId(mail);
         let user = await redis.get(`multiFactorAuthentication:${userId}`);
         if(!user){
+            console.log("User not found in redis");
             return reply.send(new ApiError("invalid request", 400));
         };
         user = JSON.parse(user);
         const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint, user.deviceFingerPrintHash);
+        
         if (!verifyDevice.success) {
             return reply.send(new ApiError("invalid request", 400));
         };

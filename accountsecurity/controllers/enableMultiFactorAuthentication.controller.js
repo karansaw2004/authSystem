@@ -13,7 +13,7 @@ export async function handleEnableMultiFactorAuthentication(req,reply) {
         };
         const hashKey = await hashPassword(securityKey);
         user.hashedSecurityKey = hashKey.hashedPassword;
-        user.isMultiFactorEnabled = true;
+        user.multiFactorAuthentication = true;
         await user.save();
         await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user));
         return reply.send(new ApiResponse("Multi-factor authentication enable successfully", 200));

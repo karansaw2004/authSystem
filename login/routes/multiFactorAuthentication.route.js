@@ -11,10 +11,10 @@ export function multiFactorAuthenticationRoute(fastify, opts) {
                     type: "object",
                     properties: {
                         mail: { type: "string", format: "email" },
-                        mfaCode: { type: "string", minLength: 6, maxLength: 6 },
+                        securityKey: { type: "string" },
                         deviceFingerPrint: { type: "string" },
                     },
-                    required: ["mail", "mfaCode", "deviceFingerPrint"],
+                    required: ["mail", "securityKey", "deviceFingerPrint"],
                 },
             },
             preHandler: multiFactorAuthenticationMiddleware,

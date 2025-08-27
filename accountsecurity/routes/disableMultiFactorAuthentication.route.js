@@ -7,7 +7,7 @@ export function disableMultiFactorAuthenticationRoute(fastify) {
     fastify.route(
         {
             method: "POST",
-            url: "/auth/disable-mfa",
+            url: "/",
             schema: {
                 body: {
                     type: "object",

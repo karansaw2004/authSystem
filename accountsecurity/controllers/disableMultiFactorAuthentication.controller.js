@@ -15,7 +15,7 @@ export async function handleDisableMultiFactorAuthentication(req,reply) {
         if (!verifyKey.isValid) {
             return reply.send(new ApiError("Invalid security key", 401)).code(401);
         };
-        user.isMultiFactorEnabled = false;
+        user.multiFactorAuthentication = false;
         user.hashedSecurityKey = null;
         await user.save();
         await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user));

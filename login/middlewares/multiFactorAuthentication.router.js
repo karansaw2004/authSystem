@@ -3,13 +3,13 @@ import {deepSanatize} from "../utils/deepSanatize.util.js";
 
 export function multiFactorAuthenticationMiddleware(req, reply, done) {
     try {
-        const { mail, mfaCode, deviceFingerPrint } = req.body;
+        const { mail, securityKey, deviceFingerPrint } = req.body;
         const sanitizedBody = {
             mail: deepSanatize(mail),
-            mfaCode: mfaCode,
+            securityKey: securityKey,
             deviceFingerPrint: deviceFingerPrint,
         };
-        if (!sanitizedBody.mail || !sanitizedBody.mfaCode || !sanitizedBody.deviceFingerPrint) {
+        if (!sanitizedBody.mail || !sanitizedBody.securityKey || !sanitizedBody.deviceFingerPrint) {
             return reply.send(new ApiError("invalid request", 400));
         };
         req.body = sanitizedBody;

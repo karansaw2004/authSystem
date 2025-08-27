@@ -4,10 +4,11 @@ import {securityManager} from "../security/securityManager.security.js";
 import {User} from "../schema/user.modle.js";
 import {Login} from "../schema/login.modle.js";
 import {hashPassword} from "../services/hashPassword.service.js";
+import {ApiResponse} from "../res/apiResponse.res.js";
 
 export async function handleVerifyOtpForgotPassword(req, reply) {
     try {
-        const { mail, otp, deviceFingerPrint,password } = req.body;
+        const { mail, otp, deviceFingerPrint,newPassword } = req.body;
         const userId = securityManager.createUserId(mail);
         let data = await redis.get(`forgotpassword:${userId}`);
         if (!data) {
@@ -24,8 +25,12 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
         if (verifyDevice.reHash) {
             data.deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
         };
-        const hashedNewPassword = await hashPassword(password);
-        const updateUser = await User.findByIdAndUpdate({userId}, {$set:{hashedPassword:hashedNewPassword}},{new:true});
+        const hashNewPassword = await hashPassword(newPassword);
+        const updateUser = await User.findOneAndUpdate(
+            { userId },
+            { $set: { hashedPassword: hashNewPassword.hashedPassword } },
+            { new: true }
+        );
         if(!updateUser){
             return reply.send(new ApiError("User not found", 404));
         };
@@ -51,7 +56,7 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
             email: updateUser.mail,
             profileImageUrl: updateUser.profileImageUrl,
         };
-        return reply.send(new ApiResponse({ userId:userId,accessToken: accessTokenPayload, refreshToken: refreshTokenPayload }, "success", 200));
+        return reply.send(new ApiResponse({ userId:userId,accessToken:securityManager.createAccessToken(accessTokenPayload,"1d"), refreshToken: securityManager.createRefreshToken(refreshTokenPayload,"7d") }, "success", 200));
     } catch (error) {
         console.log("error in the main function of verifyOtpForgotPassword", error.message);
         return reply.send(new ApiError("Internal server error", 500));

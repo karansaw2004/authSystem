@@ -5,16 +5,17 @@ import {verifyOtpForgotPasswordMiddleware} from "../middlewares/verifyOtpForgotp
 export function verifyOtpForgotPasswordRoute(fastify, opts) {
     fastify.route({
         method: "POST",
-        url: "/verify-otp",
+        url: "/",
         schema: {
             body: {
                 type: "object",
                 properties: {
                     mail: { type: "string", format: "email" },
                     otp: { type: "string" },
-                    deviceFingerPrint: { type: "string" }
+                    deviceFingerPrint: { type: "string" },
+                    newPassword: { type: "string", minLength: 8 }
                 },
-                required: ["mail", "otp", "deviceFingerPrint"]
+                required: ["mail", "otp", "deviceFingerPrint", "newPassword"]
             }
         },
         preHandler: verifyOtpForgotPasswordMiddleware,

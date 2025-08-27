@@ -10,9 +10,10 @@ export function forgotPasswordRoute(fastify,opts) {
                 body: {
                     type: "object",
                     properties: {
-                        email: { type: "string", format: "email" }
+                        mail: { type: "string", format: "email" },
+                        deviceFingerPrint: { type: "string" }
                     },
-                    required: ["email"]
+                    required: ["mail", "deviceFingerPrint"]
                 }
             },
             preHandler: forgotPasswordMiddleware,

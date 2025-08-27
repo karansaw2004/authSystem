@@ -3,14 +3,15 @@ import {deepSanatize} from "../utils/deepSanatize.util.js";
 
 export function verifyOtpForgotPasswordMiddleware(req, reply, done) {
     try {
-        const {mail,otp,deviceFingerPrint} = req.body;
+        const {mail,otp,deviceFingerPrint,newPassword} = req.body;
         const sanitizedData = {
             mail: deepSanatize(mail),
             otp: deepSanatize(otp),
             deviceFingerPrint: deviceFingerPrint,
+            newPassword: newPassword,
         };
-        if (!sanitizedData.mail || !sanitizedData.otp || !sanitizedData.deviceFingerPrint) {
-            return reply.send(new ApiError("Mail, OTP and Device Finger Print are required", 400));
+        if (!sanitizedData.mail || !sanitizedData.otp || !sanitizedData.deviceFingerPrint || !sanitizedData.newPassword) {
+            return reply.send(new ApiError("Mail, OTP, Device Finger Print and New Password are required", 400));
         };
         req.body = sanitizedData;
         return done();

@@ -15,7 +15,7 @@ export async function handleForgotPassword(req,reply) {
         let user = await redis.get(`user:${userId}`);
         let fromDb = false;
         if (!user) {
-            user = await User.findOne(userId);
+            user = await User.findOne({ userId });
             if (!user) {
                 return reply.send(new ApiError("User not found", 404));
             };
@@ -31,7 +31,7 @@ export async function handleForgotPassword(req,reply) {
             return reply.send(new ApiError("Internal Server Error", 500));
         };
         const deviceFingerPrintHash = securityManager.createDeviceFingerPrintHash(deviceFingerPrint);
-        await redis.set(`forgotpassword:${userId}`, { otp, deviceFingerPrintHash }, 300);
+        await redis.set(`forgotpassword:${userId}`, JSON.stringify({ otp, deviceFingerPrintHash }), 300);
         return reply.send(new ApiResponse({mail:maskEmail(mail),otpSent:true},"success", 200));
     } catch (error) {
         console.log("error in the main handle function of the handle forgot password", error);

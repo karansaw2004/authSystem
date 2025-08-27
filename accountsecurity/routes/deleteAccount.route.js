@@ -5,15 +5,15 @@ import { verifyDevice } from "../helpers/verifyDevice.helper.js";
 
 export function deleteAccountRoute(fastify, opts) {
   fastify.route({
-    method: "POST",
+    method: "DELETE",
     url: "/",
     schema: {
-      body: {
+      body:{
         type: "object",
         properties: {
-          userId: { type: "string" },
+          deviceFingerPrint: { type: "string" },
         },
-        required: ["userId"],
+        required: ["deviceFingerPrint"],
       },
       headers: {
         type: "object",

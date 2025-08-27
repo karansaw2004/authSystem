@@ -11,7 +11,7 @@ export async function handleDeleteRecoveryMail(req, reply) {
         if (!user) {
             return reply.send(new ApiError("User not found", 404));
         };
-        await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user));
+        await redis.setWithoutExpiration(`user:${userId}`, JSON.stringify(user.toObject()));
         return reply.send(new ApiResponse("Recovery mail deleted successfully", 200));
     } catch (error) {
         console.log("error in the main handle function of the delete recovery mail route", error.message);

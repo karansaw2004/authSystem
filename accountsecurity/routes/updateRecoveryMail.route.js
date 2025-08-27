@@ -8,7 +8,24 @@ export function updateRecoveryMailRoute(fastify, opts) {
     fastify.route(
         {
             method: "POST",
-            url: "/update-recovery-mail",
+            url: "/",
+            schema:{
+                body: {
+                    type: "object",
+                    properties: {
+                        recoveryMail: { type: "string", format: "email" },
+                        deviceFingerPrint: { type: "string" }
+                    },
+                    required: ["recoveryMail", "deviceFingerPrint"]
+                },
+                headers: {
+                    type: "object",
+                    properties: {
+                        authorization: { type: "string" }
+                    },
+                    required: ["authorization"]
+                }
+            },
             preHandler: [verifyAccessToken, verifyDevice, updateRecoveryMailMiddleware],
             handler: handleUpdateRecoveryMail
         }

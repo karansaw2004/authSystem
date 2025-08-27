@@ -6,10 +6,26 @@ import {verifyDevice} from "../helpers/verifyDevice.helper.js";
 export function deleteRecoveryMailRoute(fastify, opts) {
     fastify.route(
         {
-            method: "POST",
-            url: "/delete-recovery-mail",
+            method: "DELETE",
+            url: "/",
+            schema:{
+                body: {
+                    type: "object",
+                    properties: {
+                        deviceFingerPrint: { type: "string" }
+                    },
+                    required: ["deviceFingerPrint"]
+                },
+                headers: {
+                    type: "object",
+                    properties: {
+                        authorization: { type: "string" }
+                    },
+                    required: ["authorization"]
+                }
+            },
             preHandler: [verifyAccessToken, verifyDevice, deleteRecoveryMailMiddleware],
             handler: handleDeleteRecoveryMail
         }
-    )
-}
+    );
+};

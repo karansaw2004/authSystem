@@ -32,6 +32,7 @@ export async function handleVerifyOtpRegister(req, reply) {
         const session = await mongoose.startSession();
         let user;
         let loginDetail;
+        console.log(data.otp);
         try {
             session.startTransaction();
             user = (await User.create([
@@ -43,20 +44,23 @@ export async function handleVerifyOtpRegister(req, reply) {
                     hashedPassword: data.hashedPassword,
                 }
             ], { session }))[0];
-            loginDetail = (await Login.create([
+            loginDetail = await Login.create(
                 {
                     userId,
                     deviceFingerPrintHash: data.deviceFingerPrintHash,
                     ipAddress: req.ip
                 }
-            ], { session }))[0];
+            , { session });
             await session.commitTransaction();
         } catch (error) {
+            console.log("Error during transaction:", error);
             await session.abortTransaction();
         } finally {
             session.endSession();
         };
+        console.log(user, loginDetail);
         if (!user || !loginDetail) {
+            console.log("User or login detail creation failed");
             return reply.send(new ApiError("Internal Server Error", 500));
         };
         await redis.del(`reserve:${userId}`);

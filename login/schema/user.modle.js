@@ -52,9 +52,8 @@ const userSchema = new mongoose.Schema(
         recoveryMail:{
             type:String,
         },
-        hashedSecuriteyKey:{
+        hashedSecurityKey:{
             type:String,
-            required:true,
             default:null,
         },
     },

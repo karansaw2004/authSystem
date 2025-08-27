@@ -9,6 +9,7 @@ import {updateNameRoute} from "./updateName.route.js";
 import {updatePasswordRoute} from "./updatePassword.route.js";
 import {updateRecoveryMailRoute} from "./updateRecoveryMail.route.js";
 import {verifyOtpRecoveryMailRoute} from "./verifyOtpRecoveryMail.route.js";
+import {resendOtpRecoveryMailRoute} from "./resendOtpRecoveryMail.route.js";
 
 export function masterRoute(fastify, opts) {
     fastify.register(deleteAccountRoute, { prefix: "/deleteaccount" });
@@ -22,4 +23,5 @@ export function masterRoute(fastify, opts) {
     fastify.register(updatePasswordRoute, { prefix: "/updatepassword" });
     fastify.register(updateRecoveryMailRoute, { prefix: "/updaterecoverymail" });
     fastify.register(verifyOtpRecoveryMailRoute, { prefix: "/verifyotprecoverymail" });
+    fastify.register(resendOtpRecoveryMailRoute, { prefix: "/resendotprecoverymail" });
 };

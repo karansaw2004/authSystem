@@ -56,8 +56,8 @@ export async function handleVerifyOtpLogin(req,reply){
         };
         return reply.send(new ApiResponse({
             userId: userId,
-            accessToken: securityManager.createAccessToken(accessTokenPayload),
-            refreshToken: securityManager.createRefreshToken(refreshTokenPayload),
+            accessToken: securityManager.createAccessToken(accessTokenPayload, "1d"),
+            refreshToken: securityManager.createRefreshToken(refreshTokenPayload, "7d"),
         },"success", 200));
     } catch (error) {
         console.log("error in the main verify otp login",error.message);

@@ -14,7 +14,7 @@ export function masterRoute(fastify, opts) {
     fastify.register(deleteRecoveryMailRoute, { prefix: "/account" });
     // fastify.register(g, { prefix: "/account" });
     fastify.register(toggleMultiFactorAuthenticationRoute, { prefix: "/account" });
-    fastify.register(toggleTwoFactorAuthenticationRoute, { prefix: "/account" });
+    fastify.register(toggleTwoFactorAuthenticationRoute, { prefix: "/twofactorauthentication" });
     fastify.register(updateDobRoute, { prefix: "/account" });
     fastify.register(updateNameRoute, { prefix: "/account" });
     fastify.register(updatePasswordRoute, { prefix: "/account" });

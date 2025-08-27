@@ -8,7 +8,16 @@ export function toggleTwoFactorAuthenticationRoute(fastify, opts) {
     fastify.route(
         {
             method: "POST",
-            url: "/toggle-2fa",
+            url: "/",
+            schema:{
+                body: {
+                    type: "object",
+                    properties: {
+                        deviceFingerPrint: { type: "string" }
+                    },
+                    required: ["deviceFingerPrint"]
+                }
+            },
             preHandler: [verifyAccessToken, verifyDevice, toggleTwoFactorAuthenticationMiddleware],
             handler: handleToggleTwoFactorAuthentication
         }

@@ -14,7 +14,7 @@ export function verifyAccessToken(req,reply,done) {
             return reply.send(new ApiError("Invalid access token",403));
         };
         req.body.userId = result.payload.userId;
-        req.body.reHash = result.payload.reHash;
+        req.body.reHash = result.reHash;
         req.body.deviceFingerPrintHash = result.payload.deviceFingerPrintHash;
         return done();
     } catch (error) {

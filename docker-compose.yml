@@ -6,7 +6,7 @@ services:
     container_name: redis-stack
     ports:
       - "6379:6379"
-      - "8001:8001"
+      - "8050:8001"
     volumes:
       - redis-data2:/data
 
@@ -31,7 +31,6 @@ services:
     volumes:
       - redpanda-data2:/var/lib/redpanda/data
 
-  
 volumes:
   redis-data2:
   redpanda-data2:

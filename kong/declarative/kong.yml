@@ -1,0 +1,106 @@
+_format_version: "3.0"
+
+services:
+  - name: register-microservice
+    url: http://host.docker.internal:3000
+    routes:
+      - name: check-user-id-route
+        paths:
+          - /auth/api/v1/checkuserid
+        strip_path: false
+      - name: register-user-route
+        paths:
+          - /auth/api/v1/register
+        strip_path: false
+      - name: verify-otp-register-route
+        paths:
+          - /auth/api/v1/verifyotpregister
+        strip_path: false
+
+  - name: login-microservice
+    url: http://host.docker.internal:3001
+    routes:
+      - name: login-route
+        paths:
+          - /auth/api/v1/login
+        strip_path: false
+      - name: verify-two-factor-authentication-route
+        paths:
+          - /auth/api/v1/verifyotplogin
+        strip_path: false
+      - name: verify-multi-factor-authentication-route
+        paths:
+          - /auth/api/v1/multifactorauthentication
+        strip_path: false
+
+  - name: forgot-password-microservice
+    url: http://host.docker.internal:3002
+    routes:
+      - name: forgot-password-route
+        paths:
+          - /auth/api/v1/forgotpassword
+        strip_path: false
+      - name: verify-otp-forgot-password-route
+        paths:
+          - /auth/api/v1/verifyotpforgotpassword
+        strip_path: false
+
+  - name: personal-detail-microservice
+    url: http://host.docker.internal:3003
+    routes:
+      - name: get-all-login-history-route
+        paths:
+          - /auth/api/v1/getallloginhistory
+        strip_path: false
+      - name: get-user-data-route
+        paths:
+          - /auth/api/v1/getuserdata
+        strip_path: false
+      - name: logout-route
+        paths:
+          - /auth/api/v1/logout
+        strip_path: false
+
+  - name: account-security-microservice
+    url: http://host.docker.internal:3004
+    routes:
+      - name: delete-account-route
+        paths:
+          - /auth/api/v1/deleteaccount
+        strip_path: false
+      - name: enable-two-factor-authentication-route
+        paths:
+          - /auth/api/v1/enabletwofactorauthentication
+        strip_path: false
+      - name: disable-two-factor-authentication-route
+        paths:
+          - /auth/api/v1/disbletwofactorauthentication
+        strip_path: false
+      - name: delete-recovery-mail-route
+        paths:
+          - /auth/api/v1/deleterecoverymail
+        strip_path: false
+      - name: toggle-two-factor-authentication-route
+        paths:
+          - /auth/api/v1/twofactorauthentication
+        strip_path: false
+      - name: update-name-route
+        paths:
+          - /auth/api/v1/updatename
+        strip_path: false
+      - name: update-dob-route
+        paths:
+          - /auth/api/v1/updatedob
+        strip_path: false
+      - name: update-password-route
+        paths:
+          - /auth/api/v1/updatepassword
+        strip_path: false
+      - name: update-recovery-mail-route
+        paths:
+          - /auth/api/v1/updaterecoverymail
+        strip_path: false
+      - name: verify-otp-recovery-mail-route
+        paths:
+          - /auth/api/v1/verifyotprecoverymail
+        strip_path: false

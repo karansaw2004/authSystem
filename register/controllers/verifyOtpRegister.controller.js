@@ -41,6 +41,7 @@ export async function handleVerifyOtpRegister(req, reply) {
                     accountBasedOn: country,
                     name: data.name,
                     hashedPassword: data.hashedPassword,
+                    dob: data.dob,
                 }
             ], { session }))[0];
             loginDetail = (await Login.create([

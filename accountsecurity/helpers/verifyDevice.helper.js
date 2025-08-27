@@ -5,6 +5,7 @@ export function verifyDevice(req,reply,done){
     try {
         const {deviceFingerPrint,deviceFingerPrintHash} = req.body;
         const verifyDevice = securityManager.verifyDeviceFingerPrintHash(deviceFingerPrint,deviceFingerPrintHash);
+        console.log("verifyDevice",verifyDevice);
         if (!verifyDevice.success) {
             return reply.send(new ApiError("Device verification failed", 400));
         };

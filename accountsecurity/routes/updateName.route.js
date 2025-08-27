@@ -8,7 +8,24 @@ export function updateNameRoute(fastify, opts) {
     fastify.route(
         {
             method: "POST",
-            url: "/update-name",
+            url: "/",
+            schema:{
+                body: {
+                    type: "object",
+                    properties: {
+                        newName: { type: "string" },
+                        deviceFingerPrint: { type: "string" }
+                    },
+                    required: ["newName","deviceFingerPrint"]
+                },
+                headers: {
+                    type: "object",
+                    properties: {
+                        authorization: { type: "string" }
+                    },
+                    required: ["authorization"]
+                },
+            },
             preHandler: [verifyAccessToken, verifyDevice, updateNameMiddleware],
             handler: handleUpdateName
         }

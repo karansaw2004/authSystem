@@ -1,17 +1,16 @@
 import {ApiError} from "../err/api.err.js";
 import {deepSanatize} from "../utils/deepSanatize.util.js";
-import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
 
 export function updateNameMiddleware(req, reply, done) {
     try {
-        const { name } = req.body;
+        const { newName } = req.body;
         const sanitizedData = {
-            name: deepSanatize(name),
+            newName: deepSanatize(newName),
         };
-        if (!sanitizedData.name) {
-            return reply.send(new ApiError("name is required", 400));
+        if (!sanitizedData.newName) {
+            return reply.send(new ApiError("newName is required", 400));
         };
-        req.body.name = sanitizedData.name;
+        req.body.newName = sanitizedData.newName;
         return done();
     } catch (error) {
         console.log("error in the middleware function of the updateName route", error.message);

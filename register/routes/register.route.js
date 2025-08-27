@@ -14,8 +14,9 @@ export function registerRoute(fastify,opts) {
                         password: { type: "string", minLength: 8 },
                         deviceFingerPrint: { type: "string" },
                         name: { type: "string" },
+                        dob: { type: "string" }
                     },
-                    required: ["mail", "password", "deviceFingerPrint", "name"]
+                    required: ["mail", "password", "deviceFingerPrint", "name", "dob"]
                 }
             },
             preHandler: [registerMiddleware],

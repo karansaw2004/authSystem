@@ -9,7 +9,7 @@ import {maskEmail} from "../helpers/maskMail.helper.js";
 
 export async function handleRegister(req, reply) {
     try {
-        const { mail, deviceFingerPrint,password,name } = req.body;
+        const { mail, deviceFingerPrint,password,name,dob} = req.body;
         const userId = securityManager.createUserId(mail);
         let data = await redis.get(`reserve:${userId}`);
         if (!data) {
@@ -26,6 +26,7 @@ export async function handleRegister(req, reply) {
         const isOtpSent = await SendOtp(mail, subject, otp);
         data.otp = otp;
         data.name = name;
+        data.dob = String(dob);
         data.hashedPassword = hashedPassword;
         await redis.set(`reserve:${userId}`, JSON.stringify(data), 300);
         if (!isOtpSent) {

@@ -44,13 +44,13 @@ export async function handleVerifyOtpRegister(req, reply) {
                     hashedPassword: data.hashedPassword,
                 }
             ], { session }))[0];
-            loginDetail = await Login.create(
+            loginDetail = (await Login.create([
                 {
                     userId,
                     deviceFingerPrintHash: data.deviceFingerPrintHash,
                     ipAddress: req.ip
                 }
-            , { session });
+            ], { session }))[0];
             await session.commitTransaction();
         } catch (error) {
             console.log("Error during transaction:", error);

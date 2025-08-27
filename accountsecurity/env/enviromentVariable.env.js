@@ -142,7 +142,9 @@ class EnvironmentVariable {
         };
     }
     getS3Config() {
-        return this.#bucketName;
+        return {
+            bucketName: this.#bucketName
+        };
     }
     getRedisConfig() {
         return {

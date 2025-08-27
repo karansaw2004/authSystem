@@ -6,6 +6,7 @@ import {env} from "./env/index.js";
 import {redis,redpanda} from "./config/index.js";
 import fastify from "fastify";
 import {config} from "dotenv";
+import {s3} from "./helpers/s3.helper.js";
 config();
 
 
@@ -23,8 +24,10 @@ app.register(masterRoute,{prefix:"/auth/api/v1"});
         redis.setConfig(env.getRedisConfig());
         redpanda.setConfig(env.getRedpandaConfig());
         redpanda.createProducer();
+        s3.setCloudConfig(env.getCloudConfig());
+        s3.setBucketName(env.getS3Config());
         await redpanda.connectProducer();
-        await app.listen({port: PORT});
+        app.listen({port: PORT});
         console.log(`Server is running on port ${PORT}`);
     } catch (error) {
         await database.disconnect();

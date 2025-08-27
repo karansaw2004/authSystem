@@ -1,5 +1,7 @@
 import {handleUpdateRecoveryMail} from "../controllers/updateRecoveryMail.controller.js";
 import {updateRecoveryMailMiddleware} from "../middlewares/updateRecoveryMail.middleware.js";
+import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
+import {verifyDevice} from "../helpers/verifyDevice.helper.js";
 
 
 export function updateRecoveryMailRoute(fastify, opts) {
@@ -7,7 +9,7 @@ export function updateRecoveryMailRoute(fastify, opts) {
         {
             method: "POST",
             url: "/update-recovery-mail",
-            preHandler: [updateRecoveryMailMiddleware],
+            preHandler: [verifyAccessToken, verifyDevice, updateRecoveryMailMiddleware],
             handler: handleUpdateRecoveryMail
         }
     )

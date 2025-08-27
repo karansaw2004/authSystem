@@ -1,5 +1,7 @@
 import {handleDeleteAccount} from "../controllers/deleteAccount.controller.js";
 import {deleteAccountMiddleware} from "../middlewares/deleteAccount.middleware.js";
+import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
+import {verifyDevice} from "../helpers/verifyDevice.helper.js";
 
 export function deleteAccountRoute(fastify, opts) {
     fastify.route(
@@ -22,7 +24,7 @@ export function deleteAccountRoute(fastify, opts) {
                     required: ["authorization"]
                 }
             },
-            preHandler: [deleteAccountMiddleware],
+            preHandler: [verifyAccessToken, verifyDevice, deleteAccountMiddleware],
             handler: handleDeleteAccount
         }
     )

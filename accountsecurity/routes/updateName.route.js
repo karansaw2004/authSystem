@@ -1,5 +1,7 @@
 import {handleUpdateName} from "../controllers/updateName.controller.js";
 import {updateNameMiddleware} from "../middlewares/updateName.middleware.js";
+import {verifyAccessToken} from "../helpers/verifyAccessToken.helper.js";
+import {verifyDevice} from "../helpers/verifyDevice.helper.js";
 
 
 export function updateNameRoute(fastify, opts) {
@@ -7,7 +9,7 @@ export function updateNameRoute(fastify, opts) {
         {
             method: "POST",
             url: "/update-name",
-            preHandler: [updateNameMiddleware],
+            preHandler: [verifyAccessToken, verifyDevice, updateNameMiddleware],
             handler: handleUpdateName
         }
     )

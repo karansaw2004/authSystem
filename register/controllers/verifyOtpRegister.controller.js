@@ -32,7 +32,6 @@ export async function handleVerifyOtpRegister(req, reply) {
         const session = await mongoose.startSession();
         let user;
         let loginDetail;
-        console.log(data.otp);
         try {
             session.startTransaction();
             user = (await User.create([
@@ -58,7 +57,6 @@ export async function handleVerifyOtpRegister(req, reply) {
         } finally {
             session.endSession();
         };
-        console.log(user, loginDetail);
         if (!user || !loginDetail) {
             console.log("User or login detail creation failed");
             return reply.send(new ApiError("Internal Server Error", 500));

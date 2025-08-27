@@ -44,7 +44,7 @@ export async function handleVerifyOtpForgotPassword(req, reply) {
             return reply.send(new ApiError("Internal Server error",500));
         };
         await redis.del(`forgotpassword:${userId}`);
-        await redis.setWithoutExpiration(`user:${userId}`,JSON.stringify(saveLoginDetail.toObject()));
+        await redis.setWithoutExpiration(`user:${userId}`,JSON.stringify(updateUser.toObject()));
         const accessTokenPayload = {
             userId: userId,
             deviceFingerPrintHash: data.deviceFingerPrintHash

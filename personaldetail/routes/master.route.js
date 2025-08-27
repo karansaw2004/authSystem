@@ -3,7 +3,7 @@ import {getUserDataRoute} from "./getUserData.route.js";
 import {logoutRoute} from "./logout.route.js";
 
 export function masterRoute(fastify, options) {
-    fastify.register(getAllLoginHistoryRoute, { prefix: "/user" });
-    fastify.register(getUserDataRoute, { prefix: "/user" });
-    fastify.register(logoutRoute, { prefix: "/user" });
+    fastify.register(getAllLoginHistoryRoute, { prefix: "/getallloginhistory" });
+    fastify.register(getUserDataRoute, { prefix: "/getuserdata" });
+    fastify.register(logoutRoute, { prefix: "/logout" });
 }

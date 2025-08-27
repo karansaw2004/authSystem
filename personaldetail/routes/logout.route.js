@@ -7,21 +7,22 @@ export function logoutRoute(fastify, options) {
     fastify.route(
         {
             method: "POST",
-            url: "/user/logout",
+            url: "/",
             schema: {
-                response: {
-                    200: {
-                        type: "object",
-                        properties: {
-                            message: { type: "string" }
-                        }
-                    }
-                },
                 body: {
                     type: "object",
                     properties: {
                         deviceFingerPrint: { type: "string" }
-                    }
+                    },
+                    required: ["deviceFingerPrint"]
+                },
+                headers: {
+                    type: "object",
+                    properties: {
+                        authorization: { type: "string" }
+                    },
+                    required: ["authorization"],
+                    additionalProperties: true
                 }
             },
             preHandler: [verifyAccessToken,verifyDevice,logoutMiddleware],

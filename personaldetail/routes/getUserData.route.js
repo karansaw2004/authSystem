@@ -7,24 +7,22 @@ export function getUserDataRoute(fastify, options) {
     fastify.route(
         {
             method:"POST",
-            url:"/user/data",
+            url:"/",
             schema:{
-                response:{
-                    200:{
-                        type:"object",
-                        properties:{
-                            userId:{type:"string"},
-                            email:{type:"string"},
-                            name:{type:"string"},
-                            age:{type:"integer"}
-                        }
-                    }
-                },
                 body:{
                     type: "object",
                     properties:{
                         deviceFingerPrint:{type:"string"}
-                    }
+                    },
+                    required:["deviceFingerPrint"]
+                },
+                headers:{
+                    type: "object",
+                properties: {
+                    authorization: { type: "string" },
+                },
+                required: ["authorization"],
+                additionalProperties: true,
                 }
             },
             preHandler: [verifyAccessToken, verifyDevice, getUserDataMiddleware],
